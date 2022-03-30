@@ -1,0 +1,25 @@
+{
+    "name": "subb98/metrics-sender",
+    "description": "Example of sending metrics to InfluxDB from an application",
+    "keywords": [
+        "influxdb",
+        "telegraf",
+        "metrics",
+        "monitoring",
+        "observability"
+    ],
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vladislav Subbotin",
+            "email": "subb98@gmail.com",
+            "role": "Owner"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "influxdata/influxdb-client-php": "^2.6"
+    }
+}

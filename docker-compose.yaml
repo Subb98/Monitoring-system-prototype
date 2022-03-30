@@ -1,0 +1,51 @@
+version: "3"
+services:
+  influxdb:
+    container_name: ${PROJECT_NAME}.influxdb
+    image: influxdb:2.1.1-alpine
+    volumes:
+      - ./docker/influxdb/influxdb-config.yml:/etc/influxdb2/config.yml
+      - ./docker/influxdb/data:/var/lib/influxdb
+    environment:
+      DOCKER_INFLUXDB_INIT_USERNAME: ${DOCKER_INFLUXDB_INIT_USERNAME}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${DOCKER_INFLUXDB_INIT_PASSWORD}
+      DOCKER_INFLUXDB_INIT_ORG: ${DOCKER_INFLUXDB_INIT_ORG}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${DOCKER_INFLUXDB_INIT_BUCKET}
+      DOCKER_INFLUXDB_INIT_RETENTION: ${DOCKER_INFLUXDB_INIT_RETENTION}
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
+    ports:
+      - 8086:8086
+    networks:
+      - monitoring
+  telegraf:
+    container_name: ${PROJECT_NAME}.telegraf
+    image: telegraf:1.22.0-alpine
+    volumes:
+      - ./docker/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    ports:
+      - 8125:8125
+      - 8092:8092
+      - 8094:8094
+    depends_on:
+      - influxdb
+    networks:
+      - monitoring
+  php-fpm:
+    container_name: ${PROJECT_NAME}.php-fpm
+    image: php:8.1.4-fpm-alpine3.15
+    volumes:
+      - ./app/php-fpm:/app
+    working_dir: /app
+    environment:
+      DOCKER_INFLUXDB_INIT_USERNAME: ${DOCKER_INFLUXDB_INIT_USERNAME}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${DOCKER_INFLUXDB_INIT_PASSWORD}
+      DOCKER_INFLUXDB_INIT_ORG: ${DOCKER_INFLUXDB_INIT_ORG}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${DOCKER_INFLUXDB_INIT_BUCKET}
+      DOCKER_INFLUXDB_INIT_RETENTION: ${DOCKER_INFLUXDB_INIT_RETENTION}
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
+    depends_on:
+      - influxdb
+    networks:
+      - monitoring
+networks:
+  monitoring:

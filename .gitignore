@@ -1,0 +1,3 @@
+/app/php-fpm/vendor/
+/docker/influxdb/data/
+.env
