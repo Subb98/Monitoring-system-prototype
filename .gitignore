@@ -1,3 +1,4 @@
 /app/php-fpm/vendor/
 /docker/influxdb/data/
+/docker/mysql/data/
 .env

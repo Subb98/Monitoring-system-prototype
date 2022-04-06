@@ -1,0 +1,14 @@
+[mysqld]
+character_set_server=utf8mb4
+collation_server=utf8mb4_unicode_ci
+default_authentication_plugin=caching_sha2_password
+default-time-zone=+00:00
+init_connect="SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci'"
+max_execution_time=300
+port=3306
+skip_name_resolve=1
+wait_timeout=60
+
+[mysql]
+connect-timeout=10
+default-character-set=utf8mb4

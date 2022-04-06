@@ -4,8 +4,8 @@ services:
     container_name: ${PROJECT_NAME}.influxdb
     image: influxdb:2.1.1-alpine
     volumes:
-      - ./docker/influxdb/influxdb-config.yml:/etc/influxdb2/config.yml
-      - ./docker/influxdb/data:/var/lib/influxdb
+      - ./docker/influxdb/influxdb-config.yml:/etc/influxdb2/config.yml:ro
+      - ./docker/influxdb/data:/var/lib/influxdb2/engine/data
     environment:
       DOCKER_INFLUXDB_INIT_USERNAME: ${DOCKER_INFLUXDB_INIT_USERNAME}
       DOCKER_INFLUXDB_INIT_PASSWORD: ${DOCKER_INFLUXDB_INIT_PASSWORD}
@@ -45,6 +45,24 @@ services:
       DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
     depends_on:
       - influxdb
+      - mysql
+    networks:
+      - monitoring
+  mysql:
+    container_name: ${PROJECT_NAME}.mysql
+    image: mysql:8.0.28
+    volumes:
+      - ./docker/mysql/config.cnf:/etc/mysql/conf.d/config.cnf:ro
+      - ./docker/mysql/data:/var/lib/mysql
+    environment:
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
+    depends_on:
+      - telegraf
     networks:
       - monitoring
 networks:
